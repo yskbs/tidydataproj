@@ -68,10 +68,13 @@ combined[["subjectnum"]] <- as.factor(combined[, subjectnum])
 
 
 ## to create an independent tidy data set combined3 with the average of each variable for each activity and each subject.
-combined2 <- melt(data = combined, id = c("subjectnum", "activity"))
-combined3 <- dcast(data = combined2, subjectnum + activity ~ variable, fun.aggregate = mean)
+## combined2 <- melt(data = combined, id = c("subjectnum", "activity"))
+## combined3 <- dcast(data = combined2, subjectnum + activity ~ variable, fun.aggregate = mean)
 
 ## "tidyDataMeans.csv" contains data average by subject and activity, "tidyData.csv" has the data not averaged
 ## fwrite(x = combined3, file = "tidyDataMeans.csv")
 ## fwrite(x = combined, file = "tidyData.csv")
-write.table(x = combined3, file = "tidyDataMeans.txt",row.name=FALSE)
+to_write <- combined%>%
+  group_by(subjectnum, activity) %>%
+  summarise_all(funs(mean))
+write.table(x = to_write, file = "tidyDataMeans.txt",row.name=FALSE)
